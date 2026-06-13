@@ -55,7 +55,7 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 with open('buffer.pkl', 'rb') as f:
-    mean_salary_uni_deg, alumni_data = pickle.load(f)
+    mean_salary_uni_deg, alumni_data, analysis_data, result, salary_col = pickle.load(f)
 
 st.write(alumni_data)
 
@@ -123,4 +123,80 @@ plt.tight_layout()
 
 st.pyplot(fig)
 
-st.caption("Use the sidebar to adjust moving average window, polynomial degree, and colors.")
+st.caption("Bar chart showing the relationship between average salary and university ranking.")
+
+st.markdown(f"""
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+    .custom-text {{
+        font-family: 'Roboto', sans-serif;
+        font-size: 1.2rem;
+        line-height: 1.6;
+        color: #7E8A91;
+        text-align: justify;
+        text-indent: 3em;
+        margin-bottom: 2rem;
+    }}
+    </style>
+
+    <div class="custom-text">
+        We took the average salaries of graduates from 39 universities with\
+             rankings from 671 to 1. For each university, the minimum number\
+             of bachelor's graduates in alumni_data is 20. We see a clear relationship\
+             between university ranking and average graduate salary. Despite some fluctuations\
+             in this relationship, the moving average and polynomial trend demonstrate growth.\
+             Importantly, after a university reaches the top 300 down to the top 10, the growth\
+             is minimal, and the values fluctuate around $60,000 per year. Only for the very\
+             top universities, such as Harvard and Stanford, do bachelor's salaries consistently\
+             reach $70,000 or more. We can conclude that salary depends on university ranking,\
+             but once a university is among the world's top 300, the values do not differ\
+             significantly, except for the very top institutions.
+    </div>
+""", unsafe_allow_html=True)
+
+
+st.markdown("---")
+st.subheader(" Average Salary by Degree and Field of Study")
+
+salary_heatmap = analysis_data.pivot_table(
+    index="Degree",
+    columns="Field",
+    values=salary_col,
+    aggfunc="mean"
+)
+
+career_heatmap = result.set_index('Field')[['avg_starting_salary', 'avg_mid_career_salary']]
+career_heatmap.columns = ['Starting', 'Mid-career']
+
+fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 10))
+
+sns.heatmap(
+    salary_heatmap,
+    annot=True,
+    fmt=".0f",
+    cmap="YlGnBu",
+    linewidths=0.5,
+    ax=ax1
+)
+ax1.set_title("Average graduate salary by degree and field of study", fontsize=12)
+ax1.set_xlabel("Field of study")
+ax1.set_ylabel("Degree level")
+
+sns.heatmap(
+    career_heatmap.T,
+    annot=True,
+    fmt=".0f",
+    cmap="YlGnBu",
+    linewidths=0.5,
+    ax=ax2
+)
+ax2.set_title("Average salary by field and career stage", fontsize=12)
+ax2.set_xlabel("Field of study")
+ax2.set_ylabel("Career stage")
+
+plt.tight_layout()
+
+st.pyplot(fig)
+
+st.caption("Average annual salary in USD. Darker blue indicates higher pay.")
