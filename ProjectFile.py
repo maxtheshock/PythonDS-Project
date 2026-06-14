@@ -55,7 +55,7 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 with open('buffer.pkl', 'rb') as f:
-    alumni_data, analysis_data, salary_col, degree_distribution, field_distribution, rank_col, h2_data = pickle.load(f)
+    alumni_data, analysis_data, salary_col, degree_distribution, field_distribution, rank_col, h2_data, degree_order = pickle.load(f)
 
 uni_rank_sorted = alumni_data[['University', 'University Rate']].drop_duplicates() \
                          .set_index('University')['University Rate'].sort_values(ascending=False)
@@ -314,6 +314,60 @@ st.markdown(f"""
 
 st.markdown("---")
 st.subheader("Average Salary by Degree and Field of Study")
+
+fig, ax = plt.subplots(figsize=(10, 6))
+
+sns.boxplot(
+    data=analysis_data,
+    x="Degree",
+    y=salary_col,
+    order=degree_order,
+    showmeans=True,
+    ax=ax
+)
+
+sns.stripplot(
+    data=analysis_data,
+    x="Degree",
+    y=salary_col,
+    order=degree_order,
+    color="black",
+    alpha=0.2,
+    jitter=0.25,
+    size=3,
+    ax=ax
+)
+
+ax.set_title("Salary distribution by degree level", fontsize=15, weight="bold")
+ax.set_xlabel("Degree level")
+ax.set_ylabel("Salary, USD per year")
+ax.grid(axis="y", linestyle="--", alpha=0.35)
+
+st.pyplot(fig)
+
+st.caption("The table and boxplot compare salary distributions across Bachelor, Master, and PhD graduates.")
+
+st.markdown(f"""
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+    .custom-text {{
+        font-family: 'Roboto', sans-serif;
+        font-size: 1.2rem;
+        line-height: 1.6;
+        color: #7E8A91;
+        text-align: justify;
+        text-indent: 3em;
+        margin-bottom: 2rem;
+    }}
+    </style>
+
+    <div class="custom-text">
+            The boxplot shows not only average salary differences, but also spread and outliers.\
+             This is important because two degree levels may have similar average salaries but very\
+             different salary distributions.
+    </div>
+""", unsafe_allow_html=True)
 
 degrees = st.multiselect("Degree level(s)", options=analysis_data['Degree'].unique(), default=analysis_data['Degree'].unique())
 fields = st.multiselect("Field(s) of study", options=analysis_data['Field'].unique(), default=analysis_data['Field'].unique())
