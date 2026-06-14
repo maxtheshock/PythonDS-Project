@@ -155,48 +155,45 @@ st.markdown(f"""
     </div>
 """, unsafe_allow_html=True)
 
-
 st.markdown("---")
-st.subheader(" Average Salary by Degree and Field of Study")
+st.subheader("Average Salary by Degree and Field of Study")
 
-salary_heatmap = analysis_data.pivot_table(
-    index="Degree",
-    columns="Field",
-    values=salary_col,
-    aggfunc="mean"
-)
+degrees = st.multiselect("Degree level(s)", options=analysis_data['Degree'].unique(), default=analysis_data['Degree'].unique())
+fields = st.multiselect("Field(s) of study", options=analysis_data['Field'].unique(), default=analysis_data['Field'].unique())
 
-career_heatmap = result.set_index('Field')[['avg_starting_salary', 'avg_mid_career_salary']]
-career_heatmap.columns = ['Starting', 'Mid-career']
+filtered = analysis_data[analysis_data['Degree'].isin(degrees) & analysis_data['Field'].isin(fields)]
+
+salary_heatmap = filtered.pivot_table(index="Degree", 
+                                      columns="Field", 
+                                      values=salary_col, 
+                                      aggfunc="mean")
+
+career_stages = st.multiselect("Career stage(s)", options=['Starting', 'Mid-career'], default=['Starting', 'Mid-career'])
+career_data = result.set_index('Field')[['avg_starting_salary', 'avg_mid_career_salary']]
+career_data.columns = ['Starting', 'Mid-career']
+career_data = career_data.loc[career_data.index.isin(fields), career_stages]  
 
 fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 10))
 
-sns.heatmap(
-    salary_heatmap,
-    annot=True,
-    fmt=".0f",
-    cmap="YlGnBu",
-    linewidths=0.5,
-    ax=ax1
-)
-ax1.set_title("Average graduate salary by degree and field of study", fontsize=12)
+sns.heatmap(salary_heatmap, 
+            annot=True, 
+            fmt=".0f", 
+            cmap="YlGnBu", 
+            linewidths=0.5, 
+            ax=ax1)
+ax1.set_title("Average graduate salary by degree and field of study")
 ax1.set_xlabel("Field of study")
 ax1.set_ylabel("Degree level")
 
-sns.heatmap(
-    career_heatmap.T,
-    annot=True,
-    fmt=".0f",
-    cmap="YlGnBu",
-    linewidths=0.5,
-    ax=ax2
-)
-ax2.set_title("Average salary by field and career stage", fontsize=12)
+if not career_data.empty:
+    sns.heatmap(career_data.T, annot=True, fmt=".0f", cmap="YlGnBu", linewidths=0.5, ax=ax2)
+else:
+    ax2.text(0.5, 0.5, "No data", ha='center', va='center')
+ax2.set_title("Average salary by field and career stage")
 ax2.set_xlabel("Field of study")
 ax2.set_ylabel("Career stage")
 
 plt.tight_layout()
-
 st.pyplot(fig)
 
 st.caption("Average annual salary in USD. Darker blue indicates higher pay.")
