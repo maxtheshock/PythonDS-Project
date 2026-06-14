@@ -109,10 +109,9 @@ if show_poly:
     ax.plot(x_smooth, y_smooth, '--', color=line_color_poly, linewidth=2.5, 
             label=f"Polynomial trend (deg={degree})")
 
-ax.set_xticks([])
-ax.set_xlabel("39 university with rank from 671'st to 1'st")
-ax.set_ylabel("Mean Salary $/per year")
-ax.set_title("Mean salaries of bachelors graduated from top universities")
+ax.set_xticks("Universities ordered by world rank, from lower-ranked to higher-ranked")
+ax.set_ylabel("Mean salary, USD per year")
+ax.set_title("Mean salaries of bachelor graduates by university ranking")
 ax.legend()
 ax.grid(axis='y', linestyle='--', alpha=0.4)
 ax.set_axisbelow(True)
