@@ -498,7 +498,7 @@ st.markdown(f"""
 
     <div class="custom-text">
             <p>
-        WThe heatmap reveals a monotonic increase in average salary with higher degree attainment across all fields,\
+        The heatmap reveals a monotonic increase in average salary with higher degree attainment across all fields,\
              with doctoral graduates earning substantially more than bachelor’s holders. Among disciplines, Information\
              Technology and Healthcare & Medicine exhibit the highest terminal salaries (≈88,500 and ≈82,800, respectively),\
              while Social Sciences and Natural Sciences show the lowest (≈60,800 and ≈63,800). Engineering and Business & \
