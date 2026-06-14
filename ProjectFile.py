@@ -55,7 +55,7 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 with open('buffer.pkl', 'rb') as f:
-    alumni_data, analysis_data, salary_col, degree_distribution, field_distribution, rank_col, h2_data, degree_order = pickle.load(f)
+    alumni_data, analysis_data, salary_col, degree_distribution, field_distribution, rank_col, h2_data, degree_order, h1_data, h1_metric_col = pickle.load(f)
 
 uni_rank_sorted = alumni_data[['University', 'University Rate']].drop_duplicates() \
                          .set_index('University')['University Rate'].sort_values(ascending=False)
@@ -298,7 +298,8 @@ st.markdown(f"""
     </style>
 
 <div class="custom-text">
-    <p>
+    <h3 style="color: #7E8A91; font-family: 'Roboto', sans-serif; text-indent: 0;">Hypothesis 1 conclusion</h3>
+        <p>
         The correlation coefficient between log university rank and annual graduate salary\
              is -0.517. This indicates a moderate negative relationship: the higher a university’s\
              position in the ranking (i.e., the lower its numerical rank), the higher its graduates’ salaries tend to be.
@@ -366,6 +367,74 @@ st.markdown(f"""
             The boxplot shows not only average salary differences, but also spread and outliers.\
              This is important because two degree levels may have similar average salaries but very\
              different salary distributions.
+    </div>
+""", unsafe_allow_html=True)
+
+fig, ax = plt.subplots(figsize=(10, 6))
+
+sns.boxplot(
+    data=h1_data,
+    x="Degree",
+    y=h1_metric_col,
+    order=degree_order,
+    showmeans=True,
+    ax=ax
+)
+
+sns.stripplot(
+    data=h1_data,
+    x="Degree",
+    y=h1_metric_col,
+    order=degree_order,
+    color="black",
+    alpha=0.18,
+    jitter=0.25,
+    size=3,
+    ax=ax
+)
+
+ax.axhline(
+    1.0,
+    color="black",
+    linestyle="--",
+    linewidth=2,
+    label="Field median salary"
+)
+
+ax.set_title("Field-adjusted salary by degree level", fontsize=15, weight="bold")
+ax.set_xlabel("Degree level")
+ax.set_ylabel("Salary / field median salary")
+ax.grid(axis="y", linestyle="--", alpha=0.35)
+ax.legend()
+
+st.pyplot(fig)
+
+st.markdown(f"""
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+    .custom-text {{
+        font-family: 'Roboto', sans-serif;
+        font-size: 1.2rem;
+        line-height: 1.6;
+        color: #7E8A91;
+        text-align: justify;
+        text-indent: 3em;
+        margin-bottom: 2rem;
+    }}
+    </style>
+
+    <div class="custom-text">
+        <h3 style="color: #7E8A91; font-family: 'Roboto', sans-serif; text-indent: 0;">Hypothesis 2 conclusion</h3>
+        <p>
+        Bachelor median relative salary: 0.918<br>
+        Master median relative salary: 1.077<br>
+        PhD median relative salary: 1.414
+        </p>
+        <p>
+        The data support the assumption that higher degree levels are associated with higher field‑adjusted salaries. 
+        This result should be interpreted as an observed association, not as evidence that the degree itself causes higher salary.
+        </p>
     </div>
 """, unsafe_allow_html=True)
 
