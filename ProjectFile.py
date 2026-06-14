@@ -108,8 +108,9 @@ if show_poly:
     y_smooth = poly(x_smooth)
     ax.plot(x_smooth, y_smooth, '--', color=line_color_poly, linewidth=2.5, 
             label=f"Polynomial trend (deg={degree})")
-
-ax.set_xticks("Universities ordered by world rank, from lower-ranked to higher-ranked")
+    
+plt.xticks([])
+ax.set_xlabel("Universities ordered by world rank, from lower-ranked to higher-ranked")
 ax.set_ylabel("Mean salary, USD per year")
 ax.set_title("Mean salaries of bachelor graduates by university ranking")
 ax.legend()
