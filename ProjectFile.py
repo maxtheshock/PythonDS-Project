@@ -200,3 +200,33 @@ plt.tight_layout()
 st.pyplot(fig)
 
 st.caption("Average annual salary in USD. Darker blue indicates higher pay.")
+
+st.markdown(f"""
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+    .custom-text {{
+        font-family: 'Roboto', sans-serif;
+        font-size: 1.2rem;
+        line-height: 1.6;
+        color: #7E8A91;
+        text-align: justify;
+        text-indent: 3em;
+        margin-bottom: 2rem;
+    }}
+    </style>
+
+    <div class="custom-text">
+        We examined average salaries by degree and field. The heatmap shows that PhDs \
+            in IT earn $88,000, while PhDs in Engineering earn $76,000. However, the\
+             overall average salary for engineers (across all degree levels) exceeds\
+             $90,000 – indicating that in engineering, a formal degree is not the most\
+             critical factor. Personal skills and work experience often matter just as\
+             much, if not more. Another key observation: starting salaries (first job after\
+             graduation) are very close to bachelor's graduate salaries. This means that\
+             earning a Master's or PhD sharply increases your pay, effectively letting you\
+             skip many years of slow experience‑based growth. We conclude that advanced degrees\
+             accelerate salary progression, but in fields like engineering, individual talent\
+             and experience can outweigh formal education.
+    </div>
+""", unsafe_allow_html=True)
