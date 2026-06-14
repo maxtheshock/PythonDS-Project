@@ -23,7 +23,7 @@ st.markdown("""
     </style>
     
     <div class="custom-title">
-        Complex analysis<br>of graduates of top universities
+        University Ranking and Graduate Salary Analysis
     </div>
     """, unsafe_allow_html=True)
 
